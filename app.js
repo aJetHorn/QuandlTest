@@ -9,7 +9,7 @@ $(document).ready( function ()
 
 	//var loaded = false;
 
-	$.ajaxSetup({'async': false});
+	// $.ajaxSetup({'async': false});
 
 // 	$.getJSON( "https://www.quandl.com/api/v1/datasets/WIKI/AAPL.json?auth_token=VEUT87tRgmysCmNqsAfS", function( data ) {
 //   var items = [];
@@ -22,8 +22,13 @@ $(document).ready( function ()
 //   //   console.log(data.data[0][4]);
 //   // });
 // })
-	$( "#lookupButton" ).on( "click",   function() { 
-   		updateDivContent(result_id, getClosingPrice());
+	$( "#lookupButton" ).on( "click",   function() {
+		// TODO: Create spinner
+		getClosingPrice(function(data) {
+			// TODO: Stop spinner
+			updateDivContent(result_id, data.data[0][4]);
+		})
+   		 //updateDivContent(result_id,getClosingPrice());
 	});
 
 	function updateDivContent(id, content){
@@ -35,40 +40,20 @@ $(document).ready( function ()
 		return $("#" + id).val().toUpperCase();
 	}
 
-	function getClosingPrice(){
+	function getClosingPrice(callback){
 		//console.log(data);
 		var content = "datasets/WIKI/" + getContents("security") + ".json";
 		var URL = buildQuandlURL(content, "");
 		console.log("URL is " + URL);
-		//var jsonData = getQuandlObject(URL);
-		// while (jsonData == null){
-		// 	var i;
-		// 	console.log("not loaded " + i++);
-		// 	jsonData = getQuandlObject(URL);
-		// }
-
-		//jsonData = getQuandlObject(URL);
-		// var d;
-		$.getJSON( URL, function( data ) {
-  			var items = [];
-  		//console.log(data);
-  			//console.log(data.data[0][4]);
-  			d = data;
-  		//console.log(data.data[0][4]);
-		})
-		console.log(d);
-
-		return d.data[0][4];
+		getQuandlObject(URL, function(data) {
+			callback(data);
+		});
 	}
 
-	function getQuandlObject(URL){ //error checking...
+	function getQuandlObject(URL, callback){ //error checking...
 		//https://www.quandl.com/api/v1/datasets/WIKI/AAPL.json?auth_token=VEUT87tRgmysCmNqsAfS
 		$.getJSON( URL, function( data ) {
-  			var items = [];
-  		//console.log(data);
-  			//console.log(data.data[0][4]);
-  			return data;
-  		//console.log(data.data[0][4]);
+  			callback(data);
 		})
 	}
 
