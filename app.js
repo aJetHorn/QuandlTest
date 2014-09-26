@@ -24,16 +24,28 @@ $(document).ready( function ()
 // })
 	$( "#lookupButton" ).on( "click",   function() {
 		// TODO: Create spinner
+		$("#" + result_id).empty();
 		getClosingPrice(function(data) {
 			// TODO: Stop spinner
-			updateDivContent(result_id, data.data[0][4]);
+			console.log(data);
+			updateDivContent(result_id, data.name + " | From " + data.source_name);
+			updateDivContent(result_id, "Last updated at: " + data.updated_at);
+			updateDivContent(result_id, "");
+			for (var i = 0; i < 7; i++){
+				updateDivContent(result_id, "Date: " + data.data[i][0]);
+				updateDivContent(result_id, "Opening Price: " + data.data[i][1]);
+				updateDivContent(result_id, "Closing Price: " + data.data[i][4]);
+				updateDivContent(result_id, "Daily Percent change: " + (100 - (data.data[i][1] / data.data[i][4]) * 100));
+				updateDivContent(result_id, "Volume: " + data.data[i][5]);
+				updateDivContent(result_id, "");
+			}
 		})
-   		 //updateDivContent(result_id,getClosingPrice());
 	});
 
 	function updateDivContent(id, content){
-		$("#" + id).empty();
-		$("#" + id).append(getContents("security") + " Closing Price: " + content);
+		//$("#" + id).empty();
+		$("#" + id).append(content + "<br>");
+			//getContents("security") + " Closing Price: " + content);
 	}
 
 	function getContents(id){ //what is contained
